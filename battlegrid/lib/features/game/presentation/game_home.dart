@@ -14,85 +14,128 @@ class GameScreen extends ConsumerStatefulWidget {
 
 class _GameScreenState extends ConsumerState<GameScreen> {
   final gameCoordinator = GameMaster.newGame();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Container(
-          color: Colors.amber,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              ...List.generate(
-                numberOfTileSlotOnEachAxis,
-                (yIndex) => Row(
-                  children: [
-                    ...List.generate(
-                      numberOfTileSlotOnEachAxis,
-                      (xIndex) {
-                        return Padding(
-                          padding: const EdgeInsets.all(0.0),
-                          child: Container(
-                            height: 50,
-                            width: 50,
-                            color: (xIndex.isOdd ^ yIndex.isEven)
-                                ? Colors.green
-                                : Colors.white,
-                            child: Center(
-                              child: DragTarget<GamePiece>(
-                                builder:
-                                    ((context, candidateData, rejectedData) {
-                                  return Draggable(
-                                    feedback: buildGamePieceByCoordinate(
-                                      xIndex,
-                                      yIndex,
+        body: Center(
+          child: Container(
+            color: Colors.white,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // GameBoard
+                Container(
+                  width: 500,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(
+                        color: Colors.black,
+                        width: 10,
+                      )),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ...List.generate(
+                        numberOfTileSlotOnEachAxis,
+                        (yIndex) => Row(
+                          children: [
+                            ...List.generate(
+                              numberOfTileSlotOnEachAxis,
+                              (xIndex) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(0.0),
+                                  child: Container(
+                                    height: 50,
+                                    width: 50,
+                                    decoration: BoxDecoration(
+                                      color: (xIndex.isOdd ^ yIndex.isEven)
+                                          ? Colors.green
+                                          : Colors.white,
+                                      borderRadius:
+                                          isGameBoardMidPoint(xIndex, yIndex)
+                                              ? const BorderRadius.all(
+                                                  Radius.circular(25))
+                                              : null,
                                     ),
-                                    data: GamePiece,
-                                    childWhenDragging: Container(
-                                      color: Colors.pink,
+                                    child: Stack(
+                                      children: [
+                                        isGameBoardMidPoint(xIndex, yIndex)
+                                            ? Center(
+                                                child: Container(
+                                                  width: 20,
+                                                  height: 20,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius:
+                                                        isGameBoardMidPoint(
+                                                      xIndex,
+                                                      yIndex,
+                                                    )
+                                                            ? const BorderRadius
+                                                                .all(
+                                                                Radius.circular(
+                                                                    15))
+                                                            : null,
+                                                  ),
+                                                ),
+                                              )
+                                            : const SizedBox.shrink(),
+                                        DragTarget<GamePiece>(
+                                          builder: ((
+                                            context,
+                                            candidateData,
+                                            rejectedData,
+                                          ) {
+                                            return Draggable<GamePiece>(
+                                              feedback:
+                                                  buildGamePieceByCoordinate(
+                                                xIndex,
+                                                yIndex,
+                                              ),
+                                              data: gameCoordinator
+                                                  .buildGamePieceByCoordinate(
+                                                xIndex,
+                                                yIndex,
+                                              ),
+                                              childWhenDragging: Container(
+                                                color: Colors.pink,
+                                              ),
+                                              child: buildGamePieceByCoordinate(
+                                                xIndex,
+                                                yIndex,
+                                              ),
+                                            );
+                                          }),
+                                          onAccept: (piece) {
+                                            gameCoordinator.updateLocation(
+                                              piece,
+                                              xIndex,
+                                              yIndex,
+                                            );
+                                            setState(() {});
+                                          },
+                                          onWillAccept: (data) {
+                                            print("accepted lol");
+                                            return true;
+                                          },
+                                        ),
+                                      ],
                                     ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: buildGamePieceByCoordinate(
-                                        xIndex,
-                                        yIndex,
-                                      ),
-                                    ),
-                                  );
-                                }),
-                                onAccept: (data) {
-                                  setState(() {});
-                                },
-                                onWillAccept: (data) {
-                                  print("accepted lol");
-                                  return true;
-                                },
-                              ),
+                                  ),
+                                );
+                              },
                             ),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(
-                width: 700,
-                height: 50,
-                child: Row(
-                  children: [
-                    ElevatedButton(onPressed: () {}, child: Text("Undo Moves")),
-                    ElevatedButton(onPressed: () {}, child: Text("Skip Turn")),
-                    ElevatedButton(
-                        onPressed: () {}, child: Text("Export Moves")),
-                    ElevatedButton(
-                        onPressed: () {}, child: Text("Import Moves")),
-                    ElevatedButton(
-                        onPressed: () {}, child: Text("Restart Game")),
-                  ],
-                ),
-              ),
-            ],
+                // GameButtons(),
+              ],
+            ),
           ),
         ),
       ),
@@ -110,6 +153,15 @@ class _GameScreenState extends ConsumerState<GameScreen> {
             width: 50,
             height: 50,
           )
-        : const SizedBox.shrink();
+        : const SizedBox(
+            width: 50,
+            height: 50,
+          );
+  }
+
+  bool isGameBoardMidPoint(int xIndex, int yIndex) {
+    const midPoint = (numberOfTileSlotOnEachAxis - 1) / 2;
+    if (xIndex == midPoint && yIndex == midPoint) return true;
+    return false;
   }
 }

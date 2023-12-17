@@ -65,4 +65,16 @@ class GameMaster {
     final location = Location(xCord, yCord);
     return allGamePiece.firstWhereOrNull((piece) => location == piece.location);
   }
+
+  void updateLocation(
+    GamePiece piece,
+    int newXCord,
+    int newYCord,
+  ) {
+
+    print("new cord $newXCord, $newYCord");
+    print("old cord , ");
+    piece.location.xCord = newXCord;
+    piece.location.yCord = newYCord;
+  }
 }

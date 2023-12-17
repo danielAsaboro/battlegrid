@@ -1,39 +1,43 @@
 import 'package:battlegrid/features/game/presentation/game_home.dart';
+import 'package:battlegrid/shared/presentation/app_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class GameScreenWrapper extends ConsumerStatefulWidget {
-  const GameScreenWrapper({super.key});
+class GameButtons extends ConsumerStatefulWidget {
+  const GameButtons({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
       _GameScreenWrapperState();
 }
 
-class _GameScreenWrapperState extends ConsumerState<GameScreenWrapper> {
+class _GameScreenWrapperState extends ConsumerState<GameButtons> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        height: 500,
-        child: Column(
-          children: [
-            GameScreen(),
-            SizedBox(
-              width: 400,
-              height: 50,
-              child: Row(
-                children: [
-                  ElevatedButton(onPressed: () {}, child: Text("Undo Moves")),
-                  ElevatedButton(onPressed: () {}, child: Text("Skip Turn")),
-                  ElevatedButton(onPressed: () {}, child: Text("Export Moves")),
-                  ElevatedButton(onPressed: () {}, child: Text("Import Moves")),
-                  ElevatedButton(onPressed: () {}, child: Text("Restart Game")),
-                ],
-              ),
-            )
-          ],
-        ),
+      body: Column(
+        children: [
+          SizedBox(
+            height: 50,
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    AppButton(onPressed: () {}, child: Text("Undo Moves")),
+                    AppButton(onPressed: () {}, child: Text("Skip Turn")),
+                    AppButton(onPressed: () {}, child: Text("Export Moves")),
+                  ],
+                ),
+                Row(
+                  children: [
+                    AppButton(onPressed: () {}, child: Text("Import Moves")),
+                    AppButton(onPressed: () {}, child: Text("Restart Game")),
+                  ],
+                ),
+              ],
+            ),
+          )
+        ],
       ),
     );
   }
