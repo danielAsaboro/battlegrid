@@ -18,7 +18,7 @@ class KingGamePiece extends GamePiece implements GamePieceInterface {
   String get name => throw UnimplementedError();
 
   @override
-  List allLegalMoves() {
+  List thisPieceLegalMoves() {
     // TODO: implement allLegalMoves
     throw UnimplementedError();
   }

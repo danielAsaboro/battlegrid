@@ -1,3 +1,4 @@
+import 'package:battlegrid/core/constants/game_setting_constants.dart';
 import 'package:battlegrid/features/game/domain/entities/game_piece.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,11 +21,11 @@ class _GameScreenState extends ConsumerState<GameScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               ...List.generate(
-                11,
+                numberOfTileSlotOnEachAxis,
                 (yIndex) => Row(
                   children: [
                     ...List.generate(
-                      11,
+                      numberOfTileSlotOnEachAxis,
                       (xIndex) {
                         return Padding(
                           padding: const EdgeInsets.all(0.0),
