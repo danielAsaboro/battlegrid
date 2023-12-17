@@ -1,0 +1,1 @@
+const numberOfTileSlotOnEachAxis = 11;
