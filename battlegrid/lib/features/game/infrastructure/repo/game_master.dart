@@ -11,12 +11,12 @@ import '../model/pawn.dart';
 import '../model/queen.dart';
 import '../model/rook.dart';
 
-class GameCoordinator {
+class GameMaster {
   late final List<GamePiece> _allBlackPieces;
   late final List<GamePiece> _allWhitePieces;
   List<GamePiece> get allGamePiece => [..._allBlackPieces, ..._allWhitePieces];
 
-  GameCoordinator({
+  GameMaster({
     required List<GamePiece> blacks,
     required List<GamePiece> whites,
   }) {
@@ -24,7 +24,7 @@ class GameCoordinator {
     _allWhitePieces = whites;
   }
 
-  GameCoordinator.newGame()
+  GameMaster.newGame()
       : this(
           blacks: [
             King(Location(5, 0), PieceColor.black),

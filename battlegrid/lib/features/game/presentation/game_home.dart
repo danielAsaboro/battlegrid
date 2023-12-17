@@ -1,6 +1,6 @@
 import 'package:battlegrid/core/constants/game_setting_constants.dart';
 import 'package:battlegrid/features/game/domain/entities/game_piece.dart';
-import 'package:battlegrid/features/game/infrastructure/repo/game_cordinator.dart';
+import 'package:battlegrid/features/game/infrastructure/repo/game_master.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -13,7 +13,7 @@ class GameScreen extends ConsumerStatefulWidget {
 }
 
 class _GameScreenState extends ConsumerState<GameScreen> {
-  final gameCoordinator = GameCoordinator.newGame();
+  final gameCoordinator = GameMaster.newGame();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
