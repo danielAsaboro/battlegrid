@@ -7,14 +7,17 @@ import '../enums/piece_color.dart';
 
 abstract class GamePiece {
   final Location location;
-  final PieceType _pieceType;
+  late final PieceType pieceType;
   final PieceColor _color;
 
-  GamePiece(this.location, this._pieceType, this._color);
+  GamePiece(
+    this.location,
+    this._color,
+  );
 
-  String get name => _pieceType.name;
-  String get imageUrl =>
-      "assets/images/pieces/${_color.name}/${_color.name}_$_pieceType.png";
+  String get name => pieceType.name;
+  String get imageSourcePath =>
+      "assets/icons/pieces/${_color.name}/${_color.name}_${pieceType.name}.svg";
 
   List<Location> get allPossibleMoves => List.generate(
         numberOfTileSlotOnEachAxis,
@@ -23,7 +26,6 @@ abstract class GamePiece {
           (xIndex) => Location(xIndex, yIndex),
         ),
       ).expand((element) => element).toList();
-
 
   List<Location> _generateMovesOnDiagonal(
     GamePiece piece,
@@ -58,4 +60,6 @@ abstract class GamePiece {
         throw ArgumentError('Unexpected value: $diagonalMove. Playing?!!');
     }
   }
+
+// 
 }

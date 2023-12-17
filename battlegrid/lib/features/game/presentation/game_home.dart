@@ -1,7 +1,9 @@
 import 'package:battlegrid/core/constants/game_setting_constants.dart';
 import 'package:battlegrid/features/game/domain/entities/game_piece.dart';
+import 'package:battlegrid/features/game/infrastructure/repo/game_cordinator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class GameScreen extends ConsumerStatefulWidget {
   const GameScreen({super.key});
@@ -11,6 +13,7 @@ class GameScreen extends ConsumerStatefulWidget {
 }
 
 class _GameScreenState extends ConsumerState<GameScreen> {
+  final gameCoordinator = GameCoordinator.newGame();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -40,21 +43,26 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                                 builder:
                                     ((context, candidateData, rejectedData) {
                                   return Draggable(
-                                    feedback: Container(
-                                      height: 50,
-                                      width: 50,
-                                      color: Colors.brown,
-                                      child: Text("a"),
+                                    feedback: buildGamePieceByCoordinate(
+                                      xIndex,
+                                      yIndex,
                                     ),
                                     data: GamePiece,
                                     childWhenDragging: Container(
                                       color: Colors.pink,
                                     ),
-                                    child: buildGamePieceByCoordinate(
-                                        xIndex, yIndex),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: buildGamePieceByCoordinate(
+                                        xIndex,
+                                        yIndex,
+                                      ),
+                                    ),
                                   );
                                 }),
-                                onAccept: (data) {},
+                                onAccept: (data) {
+                                  setState(() {});
+                                },
                                 onWillAccept: (data) {
                                   print("accepted lol");
                                   return true;
@@ -91,10 +99,17 @@ class _GameScreenState extends ConsumerState<GameScreen> {
     );
   }
 
-  buildGamePieceByCoordinate(
+  Widget buildGamePieceByCoordinate(
     int xCord,
     int yCord,
   ) {
-    return Text("${xCord + 1}, ${yCord + 1}");
+    final gamePiece = gameCoordinator.buildGamePieceByCoordinate(xCord, yCord);
+    return gamePiece != null
+        ? SvgPicture.asset(
+            gamePiece.imageSourcePath,
+            width: 50,
+            height: 50,
+          )
+        : const SizedBox.shrink();
   }
 }
