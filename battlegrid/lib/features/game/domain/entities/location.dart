@@ -20,5 +20,4 @@ class Location {
   @override
   int get hashCode => xCord.hashCode ^ yCord.hashCode;
 
- 
 }

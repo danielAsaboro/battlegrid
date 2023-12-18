@@ -114,6 +114,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                                               xIndex,
                                               yIndex,
                                             );
+                                           
                                             setState(() {});
                                           },
                                           onWillAccept: (data) {

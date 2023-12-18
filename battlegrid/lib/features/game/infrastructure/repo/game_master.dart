@@ -71,9 +71,6 @@ class GameMaster {
     int newXCord,
     int newYCord,
   ) {
-
-    print("new cord $newXCord, $newYCord");
-    print("old cord , ");
     piece.location.xCord = newXCord;
     piece.location.yCord = newYCord;
   }
