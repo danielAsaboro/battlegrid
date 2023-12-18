@@ -74,7 +74,7 @@ Game units and rules: <https://lordghostx.github.io/battlegrid/#game-units>
 
 ```shell
 # Clone the project
-git clone https://github.com/Mastersam07/battlegrid
+git clone https://github.com/danielAsaboro/battlegrid
 
 # Go to the project directory
 cd battlegrid
@@ -87,4 +87,7 @@ flutter run
 
 Contributions are always welcome!
 
-If you have new features to introduce or bugs to squash, kindly submit a [Pull Request (PR)](https://github.com/Mastersam07/battlegrid) to make your mark. Your participation is highly appreciated.
+If you have new features to introduce or bugs to squash, kindly submit a [Pull Request (PR)](https://github.com/danielAsaboro/battlegrid) to make your mark. Your participation is highly appreciated.
+
+
+Copied readme from: [https://github.com/Mastersam07/battlegrid]
