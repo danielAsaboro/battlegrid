@@ -3,14 +3,11 @@
 Command elite units on an 11x11 grid where chess meets modern warfare. Master advanced tactics, exploit unique unit abilities, and shape your path to victory or defeat in this thrilling strategic challenge. Are you ready to conquer the strategic frontiers?
 
 > This is a dart/flutter implementation of [battlegrid](https://github.com/LordGhostX/battlegrid).
->
-> Version is hacky but works and serves only as POC
 
 ## Demo
 
 Game units and rules: <https://lordghostx.github.io/battlegrid/#game-units>
 
-<img src="board.png" width="50%">
 
 ## Functionality
 
