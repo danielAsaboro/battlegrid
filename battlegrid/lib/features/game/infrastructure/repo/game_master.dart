@@ -66,6 +66,15 @@ class GameMaster {
     return allGamePiece.firstWhereOrNull((piece) => location == piece.location);
   }
 
+  bool isPieceOnLocation(
+    int xCord,
+    int yCord,
+  ) {
+    return buildGamePieceByCoordinate(xCord, yCord) == null ? false : true;
+  }
+
+// hacky for now,
+//need to make all fields final
   void updateLocation(
     GamePiece piece,
     int newXCord,

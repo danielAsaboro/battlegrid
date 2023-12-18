@@ -39,29 +39,29 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                     children: [
                       ...List.generate(
                         numberOfTileSlotOnEachAxis,
-                        (yIndex) => Row(
+                        (yCord) => Row(
                           children: [
                             ...List.generate(
                               numberOfTileSlotOnEachAxis,
-                              (xIndex) {
+                              (xCord) {
                                 return Padding(
                                   padding: const EdgeInsets.all(0.0),
                                   child: Container(
                                     height: 50,
                                     width: 50,
                                     decoration: BoxDecoration(
-                                      color: (xIndex.isOdd ^ yIndex.isEven)
+                                      color: (xCord.isOdd ^ yCord.isEven)
                                           ? Colors.green
                                           : Colors.white,
                                       borderRadius:
-                                          isGameBoardMidPoint(xIndex, yIndex)
+                                          isGameBoardMidPoint(xCord, yCord)
                                               ? const BorderRadius.all(
                                                   Radius.circular(25))
                                               : null,
                                     ),
                                     child: Stack(
                                       children: [
-                                        isGameBoardMidPoint(xIndex, yIndex)
+                                        isGameBoardMidPoint(xCord, yCord)
                                             ? Center(
                                                 child: Container(
                                                   width: 20,
@@ -70,8 +70,8 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                                                     color: Colors.white,
                                                     borderRadius:
                                                         isGameBoardMidPoint(
-                                                      xIndex,
-                                                      yIndex,
+                                                      xCord,
+                                                      yCord,
                                                     )
                                                             ? const BorderRadius
                                                                 .all(
@@ -91,35 +91,41 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                                             return Draggable<GamePiece>(
                                               feedback:
                                                   buildGamePieceByCoordinate(
-                                                xIndex,
-                                                yIndex,
+                                                xCord,
+                                                yCord,
                                               ),
                                               data: gameCoordinator
                                                   .buildGamePieceByCoordinate(
-                                                xIndex,
-                                                yIndex,
+                                                xCord,
+                                                yCord,
                                               ),
                                               childWhenDragging: Container(
                                                 color: Colors.pink,
                                               ),
                                               child: buildGamePieceByCoordinate(
-                                                xIndex,
-                                                yIndex,
+                                                xCord,
+                                                yCord,
                                               ),
                                             );
                                           }),
-                                          onAccept: (piece) {
+                                          onAccept: (gamePiece) {
                                             gameCoordinator.updateLocation(
-                                              piece,
-                                              xIndex,
-                                              yIndex,
+                                              gamePiece,
+                                              xCord,
+                                              yCord,
                                             );
-                                           
+
                                             setState(() {});
                                           },
-                                          onWillAccept: (data) {
-                                            print("accepted lol");
-                                            return true;
+                                          onWillAccept: (gamePiece) {
+                                            return !gameCoordinator
+                                                .isPieceOnLocation(
+                                              xCord,
+                                              yCord,
+                                            );
+                                          },
+                                          onLeave: (data) {
+                                            print('omo i was rejected');
                                           },
                                         ),
                                       ],
