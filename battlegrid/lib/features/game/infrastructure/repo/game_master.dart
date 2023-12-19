@@ -58,7 +58,7 @@ class GameMaster {
           ],
         );
 
-  GamePiece? buildGamePieceByCoordinate(
+  GamePiece? getGamePieceByCoordinate(
     int xCord,
     int yCord,
   ) {
@@ -66,11 +66,42 @@ class GameMaster {
     return allGamePiece.firstWhereOrNull((piece) => location == piece.location);
   }
 
+  bool canPieceMoveToThisLocation(
+    GamePiece piece,
+    int xCord,
+    int yCord,
+  ) {
+    final pieceMoves = piece.getPieceMoves(allGamePiece, xCord, yCord);
+
+    // if possible is equal to legal
+    if (pieceMoves.legalMoves == pieceMoves.possibleMoves) {
+      return pieceMoves.possibleMoves
+          .any((location) => location == Location(xCord, yCord));
+    } else {
+      // 
+      if (condition) {
+        //
+      } else {
+        //
+      }
+      
+    }
+  }
+
   bool isPieceOnLocation(
     int xCord,
     int yCord,
   ) {
-    return buildGamePieceByCoordinate(xCord, yCord) == null ? false : true;
+    return getGamePieceByCoordinate(xCord, yCord) == null ? false : true;
+  }
+
+  bool canThisPieceKillPieceOnLocation(
+    GamePiece piece,
+    int xCord,
+    int yCord,
+  ) {
+    final gamePiece = getGamePieceByCoordinate(xCord, yCord);
+    return piece.canKillPieceOnLocation(gamePiece!);
   }
 
 // hacky for now,

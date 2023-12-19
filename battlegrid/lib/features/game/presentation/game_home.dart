@@ -95,16 +95,21 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                                                 yCord,
                                               ),
                                               data: gameCoordinator
-                                                  .buildGamePieceByCoordinate(
+                                                  .getGamePieceByCoordinate(
                                                 xCord,
                                                 yCord,
                                               ),
                                               childWhenDragging: Container(
                                                 color: Colors.pink,
                                               ),
-                                              child: buildGamePieceByCoordinate(
-                                                xCord,
-                                                yCord,
+                                              child: Stack(
+                                                children: [
+                                                  buildGamePieceByCoordinate(
+                                                    xCord,
+                                                    yCord,
+                                                  ),
+                                                  Text("$xCord, $yCord"),
+                                                ],
                                               ),
                                             );
                                           }),
@@ -116,13 +121,24 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                                             );
 
                                             setState(() {});
+                                            // delete the stupid piece
                                           },
                                           onWillAccept: (gamePiece) {
-                                            return !gameCoordinator
+                                            if (gameCoordinator
                                                 .isPieceOnLocation(
                                               xCord,
                                               yCord,
-                                            );
+                                            )) {
+                                              return gameCoordinator
+                                                      .canThisPieceKillPieceOnLocation(
+                                                gamePiece!,
+                                                xCord,
+                                                yCord,
+                                              )
+                                                  ? true
+                                                  : false;
+                                            }
+                                            return true;
                                           },
                                           onLeave: (data) {
                                             print('omo i was rejected');
@@ -153,7 +169,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
     int xCord,
     int yCord,
   ) {
-    final gamePiece = gameCoordinator.buildGamePieceByCoordinate(xCord, yCord);
+    final gamePiece = gameCoordinator.getGamePieceByCoordinate(xCord, yCord);
     return gamePiece != null
         ? SvgPicture.asset(
             gamePiece.imageSourcePath,
