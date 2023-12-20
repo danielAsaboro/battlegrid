@@ -74,17 +74,17 @@ class GameMaster {
     final pieceMoves = piece.getPieceMoves(allGamePiece, xCord, yCord);
 
     // if possible is equal to legal
-    if (pieceMoves.legalMoves == pieceMoves.possibleMoves) {
+    if (pieceMoves.legalMoves.equals(pieceMoves.possibleMoves)) {
       return pieceMoves.possibleMoves
           .any((location) => location == Location(xCord, yCord));
     } else {
-      // 
-      if (condition) {
-        //
-      } else {
-        //
-      }
-      
+      //
+      // if (condition) {
+      //   pieceMoves.legalMoves.
+      // } else {
+      //   //
+      // }
+      return false;
     }
   }
 
