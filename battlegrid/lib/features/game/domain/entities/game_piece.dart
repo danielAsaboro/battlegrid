@@ -7,6 +7,8 @@ import '../enums/diagonal_moves.dart';
 import '../enums/knight_l_moves.dart';
 import '../enums/piece_color.dart';
 
+import 'package:collection/collection.dart';
+
 abstract class GamePiece {
   final Location location;
   late final PieceType pieceType;
@@ -274,7 +276,6 @@ abstract class GamePiece {
             locationInCheck =
                 Location((location.xCord + 2) + index, location.yCord - 1);
             break;
-
           case KnightLMove.rightDown:
             locationInCheck =
                 Location((location.xCord + 2) + index, location.yCord + 1);
@@ -322,4 +323,3 @@ abstract class GamePiece {
         .toList();
   }
 }
-

@@ -72,20 +72,28 @@ class GameMaster {
     int yCord,
   ) {
     final pieceMoves = piece.getPieceMoves(allGamePiece, xCord, yCord);
+    const deepEquality = DeepCollectionEquality.unordered();
 
-    // if possible is equal to legal
-    if (pieceMoves.legalMoves.equals(pieceMoves.possibleMoves)) {
+    if (deepEquality.equals(
+      pieceMoves.legalMoves,
+      pieceMoves.possibleMoves,
+    )) {
       return pieceMoves.possibleMoves
           .any((location) => location == Location(xCord, yCord));
     } else {
-      //
-      // if (condition) {
-      //   pieceMoves.legalMoves.
-      // } else {
-      //   //
-      // }
-      return false;
+      pieceMoves.legalMoves.removeWhere(
+          (location) => pieceMoves.possibleMoves.contains(location));
+      final remainingLocation = pieceMoves.legalMoves;
+
+      final isPieceInLocation =
+          remainingLocation.contains(Location(xCord, yCord));
+      if (isPieceInLocation) {
+        return canPieceMoveToThisLocation(piece, xCord, yCord);
+      } else {
+        return true;
+      }
     }
+    // will test tomorrow TODO
   }
 
   bool isPieceOnLocation(
