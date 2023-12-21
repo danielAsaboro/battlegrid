@@ -15,6 +15,8 @@ class GameScreen extends ConsumerStatefulWidget {
 class _GameScreenState extends ConsumerState<GameScreen> {
   final gameCoordinator = GameMaster.newGame();
 
+  final boardRanks = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k"];
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -27,7 +29,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
               children: [
                 // GameBoard
                 Container(
-                  width: 500,
+                  // width: 500,
                   decoration: BoxDecoration(
                       color: Colors.white,
                       border: Border.all(
@@ -35,107 +37,161 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                         width: 10,
                       )),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      ...List.generate(
-                        numberOfTileSlotOnEachAxis,
-                        (yCord) => Row(
-                          children: [
-                            ...List.generate(
-                              numberOfTileSlotOnEachAxis,
-                              (xCord) {
-                                return Padding(
-                                  padding: const EdgeInsets.all(0.0),
-                                  child: Container(
-                                    height: 50,
-                                    width: 50,
-                                    decoration: BoxDecoration(
-                                      color: (xCord.isOdd ^ yCord.isEven)
-                                          ? Colors.green
-                                          : Colors.white,
-                                      borderRadius:
-                                          isGameBoardMidPoint(xCord, yCord)
-                                              ? const BorderRadius.all(
-                                                  Radius.circular(25))
-                                              : null,
-                                    ),
-                                    child: Stack(
-                                      children: [
-                                        isGameBoardMidPoint(xCord, yCord)
-                                            ? Center(
-                                                child: Container(
-                                                  width: 20,
-                                                  height: 20,
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius:
-                                                        isGameBoardMidPoint(
+                      Row(
+                        children: [
+                          SizedBox(
+                            height: 50,
+                            width: 50,
+                          ),
+                          ...List.generate(
+                            numberOfTileSlotOnEachAxis,
+                            (index) => SizedBox(
+                              height: 50,
+                              width: 50,
+                              child:
+                                  Center(child: Text(boardRanks[index])),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Column(
+                            children: [
+                              ...List.generate(
+                                numberOfTileSlotOnEachAxis,
+                                (index) => SizedBox(
+                                  height: 50,
+                                  width: 50,
+                                  child: Center(
+                                      child: Text((index + 1).toString())),
+                                ),
+                              ).reversed,
+                            ],
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              ...List.generate(
+                                numberOfTileSlotOnEachAxis,
+                                (yCord) => Row(
+                                  children: [
+                                    ...List.generate(
+                                      numberOfTileSlotOnEachAxis,
+                                      (xCord) {
+                                        return Container(
+                                          height: 50,
+                                          width: 50,
+                                          decoration: BoxDecoration(
+                                            color: (xCord.isOdd ^ yCord.isEven)
+                                                ? Colors.green
+                                                : Colors.white,
+                                            borderRadius: isGameBoardMidPoint(
+                                                    xCord, yCord)
+                                                ? const BorderRadius.all(
+                                                    Radius.circular(25))
+                                                : null,
+                                          ),
+                                          child: Stack(
+                                            children: [
+                                              isGameBoardMidPoint(xCord, yCord)
+                                                  ? Center(
+                                                      child: Container(
+                                                        width: 20,
+                                                        height: 20,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: Colors.white,
+                                                          borderRadius:
+                                                              isGameBoardMidPoint(
+                                                            xCord,
+                                                            yCord,
+                                                          )
+                                                                  ? const BorderRadius
+                                                                      .all(
+                                                                      Radius.circular(
+                                                                          15))
+                                                                  : null,
+                                                        ),
+                                                      ),
+                                                    )
+                                                  : const SizedBox.shrink(),
+                                              DragTarget<GamePiece>(
+                                                builder: ((
+                                                  context,
+                                                  candidateData,
+                                                  rejectedData,
+                                                ) {
+                                                  return Draggable<GamePiece>(
+                                                    feedback:
+                                                        buildGamePieceByCoordinate(
+                                                      xCord,
+                                                      yCord,
+                                                    ),
+                                                    data: gameCoordinator
+                                                        .getGamePieceByCoordinate(
+                                                      xCord,
+                                                      yCord,
+                                                    ),
+                                                    childWhenDragging:
+                                                        Container(
+                                                      color: Colors.pink,
+                                                    ),
+                                                    child: Stack(
+                                                      children: [
+                                                        buildGamePieceByCoordinate(
+                                                          xCord,
+                                                          yCord,
+                                                        ),
+                                                        Text("$xCord, $yCord"),
+                                                      ],
+                                                    ),
+                                                  );
+                                                }),
+                                                onAccept: (gamePiece) {
+                                                  gameCoordinator
+                                                      .updateLocation(
+                                                    gamePiece,
+                                                    xCord,
+                                                    yCord,
+                                                  );
+
+                                                  setState(() {});
+                                                  // delete the stupid piece
+                                                },
+                                                onWillAccept: (gamePiece) {
+                                                  if (gameCoordinator
+                                                      .isPieceOnLocation(
+                                                    xCord,
+                                                    yCord,
+                                                  )) {
+                                                    return gameCoordinator
+                                                            .canThisPieceKillPieceOnLocation(
+                                                      gamePiece!,
                                                       xCord,
                                                       yCord,
                                                     )
-                                                            ? const BorderRadius
-                                                                .all(
-                                                                Radius.circular(
-                                                                    15))
-                                                            : null,
-                                                  ),
-                                                ),
-                                              )
-                                            : const SizedBox.shrink(),
-                                        DragTarget<GamePiece>(
-                                          builder: ((
-                                            context,
-                                            candidateData,
-                                            rejectedData,
-                                          ) {
-                                            return Draggable<GamePiece>(
-                                              feedback:
-                                                  buildGamePieceByCoordinate(
-                                                xCord,
-                                                yCord,
+                                                        ? true
+                                                        : false;
+                                                  }
+                                                  return true;
+                                                },
+                                                onLeave: (data) {
+                                                  print('omo i was rejected');
+                                                },
                                               ),
-                                              data: gameCoordinator
-                                                  .buildGamePieceByCoordinate(
-                                                xCord,
-                                                yCord,
-                                              ),
-                                              childWhenDragging: Container(
-                                                color: Colors.pink,
-                                              ),
-                                              child: buildGamePieceByCoordinate(
-                                                xCord,
-                                                yCord,
-                                              ),
-                                            );
-                                          }),
-                                          onAccept: (gamePiece) {
-                                            gameCoordinator.updateLocation(
-                                              gamePiece,
-                                              xCord,
-                                              yCord,
-                                            );
-
-                                            setState(() {});
-                                          },
-                                          onWillAccept: (gamePiece) {
-                                            return !gameCoordinator
-                                                .isPieceOnLocation(
-                                              xCord,
-                                              yCord,
-                                            );
-                                          },
-                                          onLeave: (data) {
-                                            print('omo i was rejected');
-                                          },
-                                        ),
-                                      ],
+                                            ],
+                                          ),
+                                        );
+                                      },
                                     ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -153,7 +209,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
     int xCord,
     int yCord,
   ) {
-    final gamePiece = gameCoordinator.buildGamePieceByCoordinate(xCord, yCord);
+    final gamePiece = gameCoordinator.getGamePieceByCoordinate(xCord, yCord);
     return gamePiece != null
         ? SvgPicture.asset(
             gamePiece.imageSourcePath,
