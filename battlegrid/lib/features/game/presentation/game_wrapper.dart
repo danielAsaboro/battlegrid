@@ -1,4 +1,3 @@
-import 'package:battlegrid/features/game/presentation/game_home.dart';
 import 'package:battlegrid/shared/presentation/app_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,15 +22,15 @@ class _GameScreenWrapperState extends ConsumerState<GameButtons> {
               children: [
                 Row(
                   children: [
-                    AppButton(onPressed: () {}, child: Text("Undo Moves")),
-                    AppButton(onPressed: () {}, child: Text("Skip Turn")),
-                    AppButton(onPressed: () {}, child: Text("Export Moves")),
+                    AppButton(onPressed: () {}, child: const Text("Undo Moves")),
+                    AppButton(onPressed: () {}, child: const Text("Skip Turn")),
+                    AppButton(onPressed: () {}, child: const Text("Export Moves")),
                   ],
                 ),
                 Row(
                   children: [
-                    AppButton(onPressed: () {}, child: Text("Import Moves")),
-                    AppButton(onPressed: () {}, child: Text("Restart Game")),
+                    AppButton(onPressed: () {}, child: const Text("Import Moves")),
+                    AppButton(onPressed: () {}, child: const Text("Restart Game")),
                   ],
                 ),
               ],

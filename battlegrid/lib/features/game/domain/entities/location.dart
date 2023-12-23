@@ -20,4 +20,9 @@ class Location {
   @override
   int get hashCode => xCord.hashCode ^ yCord.hashCode;
 
+  @override
+  String toString() {
+    // TODO: implement toString
+    return "[$xCord, $yCord]";
+  }
 }

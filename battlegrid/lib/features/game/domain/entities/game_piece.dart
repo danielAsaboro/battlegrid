@@ -7,19 +7,20 @@ import '../enums/diagonal_moves.dart';
 import '../enums/knight_l_moves.dart';
 import '../enums/piece_color.dart';
 
+
 abstract class GamePiece {
   final Location location;
   late final PieceType pieceType;
-  final PieceColor _color;
+  final PieceColor color;
 
   GamePiece(
     this.location,
-    this._color,
+    this.color,
   );
 
   String get name => pieceType.name;
   String get imageSourcePath =>
-      "assets/icons/pieces/${_color.name}/${_color.name}_${pieceType.name}.svg";
+      "assets/icons/pieces/${color.name}/${color.name}_${pieceType.name}.svg";
 
   List<Location> get allPossibleBoardMoves => List.generate(
         numberOfTileSlotOnEachAxis,
@@ -37,7 +38,7 @@ abstract class GamePiece {
   }) {
     if (checkObstruction) {
       bool isPieceObstructed = false;
-      return List.generate(numberOfStepsToMove, (index) {
+      return List.generate(numberOfStepsToMove + 1, (index) {
         late final Location locationInCheck;
         switch (diagonalMove) {
           case DiagonalMove.topRight:
@@ -69,13 +70,15 @@ abstract class GamePiece {
         final isTherePieceOnLocation = allGamePiece
             .any((eachGamePiece) => eachGamePiece.location == locationInCheck);
 
-        if (isTherePieceOnLocation) {
+        if (isTherePieceOnLocation &&
+            (locationInCheck != Location(location.xCord, location.yCord))) {
+          print("there was a piece on location: $locationInCheck");
           isPieceObstructed = true;
         }
         return isPieceObstructed ? null : locationInCheck;
       });
     } else {
-      return List.generate(numberOfStepsToMove, (index) {
+      return List.generate(numberOfStepsToMove + 1, (index) {
         late final Location locationInCheck;
         switch (diagonalMove) {
           case DiagonalMove.topRight:
@@ -117,7 +120,7 @@ abstract class GamePiece {
   }) {
     if (checkObstruction) {
       bool isPieceObstructed = false;
-      return List.generate(numberOfStepsToMove, (index) {
+      return List.generate(numberOfStepsToMove + 1, (index) {
         late final Location locationInCheck;
         switch (straightMove) {
           case StraightMove.up:
@@ -136,13 +139,15 @@ abstract class GamePiece {
         final isTherePieceOnLocation = allGamePiece
             .any((eachGamePiece) => eachGamePiece.location == locationInCheck);
 
-        if (isTherePieceOnLocation) {
+        if (isTherePieceOnLocation &&
+            (locationInCheck != Location(location.xCord, location.yCord))) {
+          print("there was a piece on location: $locationInCheck");
           isPieceObstructed = true;
         }
         return isPieceObstructed ? null : locationInCheck;
       });
     } else {
-      return List.generate(numberOfStepsToMove, (index) {
+      return List.generate(numberOfStepsToMove + 1, (index) {
         late final Location locationInCheck;
         switch (straightMove) {
           case StraightMove.up:
@@ -228,26 +233,25 @@ abstract class GamePiece {
             locationInCheck =
                 Location((location.xCord + 2) + index, location.yCord - 1);
             break;
-
           case KnightLMove.rightDown:
             locationInCheck =
                 Location((location.xCord + 2) + index, location.yCord + 1);
             break;
           case KnightLMove.downRight:
             locationInCheck =
-                Location(location.xCord + 1, (location.yCord + 2) - index);
+                Location(location.xCord + 1, (location.yCord + 3) - index);
             break;
           case KnightLMove.downLeft:
             locationInCheck =
-                Location(location.xCord - 1, (location.yCord + 2) - index);
+                Location(location.xCord - 1, (location.yCord + 3) - index);
             break;
           case KnightLMove.leftDown:
             locationInCheck =
-                Location((location.xCord - 2) + index, location.yCord - 1);
+                Location((location.xCord - 3) + index, location.yCord - 1);
             break;
           case KnightLMove.leftUp:
             locationInCheck =
-                Location((location.xCord - 2) + index, location.yCord + 1);
+                Location((location.xCord - 3) + index, location.yCord + 1);
             break;
           case KnightLMove.upLeft:
             locationInCheck =
@@ -274,26 +278,25 @@ abstract class GamePiece {
             locationInCheck =
                 Location((location.xCord + 2) + index, location.yCord - 1);
             break;
-
           case KnightLMove.rightDown:
             locationInCheck =
                 Location((location.xCord + 2) + index, location.yCord + 1);
             break;
           case KnightLMove.downRight:
             locationInCheck =
-                Location(location.xCord + 1, (location.yCord + 2) - index);
+                Location(location.xCord + 1, (location.yCord + 3) - index);
             break;
           case KnightLMove.downLeft:
             locationInCheck =
-                Location(location.xCord - 1, (location.yCord + 2) - index);
+                Location(location.xCord - 1, (location.yCord + 3) - index);
             break;
           case KnightLMove.leftDown:
             locationInCheck =
-                Location((location.xCord - 2) + index, location.yCord - 1);
+                Location((location.xCord - 3) + index, location.yCord - 1);
             break;
           case KnightLMove.leftUp:
             locationInCheck =
-                Location((location.xCord - 2) + index, location.yCord + 1);
+                Location((location.xCord - 3) + index, location.yCord + 1);
             break;
           case KnightLMove.upLeft:
             locationInCheck =
@@ -308,18 +311,19 @@ abstract class GamePiece {
   List<Location> generateTheLMoves(
     KnightLMove knightLMove,
     int numberOfStepsToMove,
-    List<GamePiece> allGamePiece, {
+    List<GamePiece> otherGamePieces, {
     bool checkObstruction = false,
   }) {
     return _generateTheLMoves(
       knightLMove,
       numberOfStepsToMove,
-      allGamePiece,
+      otherGamePieces,
       checkObstruction: checkObstruction,
     )
         .whereType<Location>()
         .where((element) => element.isLocationValid)
         .toList();
   }
-}
 
+// lol
+}

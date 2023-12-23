@@ -1,5 +1,7 @@
 import 'package:battlegrid/core/constants/game_setting_constants.dart';
 import 'package:battlegrid/features/game/domain/entities/game_piece.dart';
+import 'package:battlegrid/features/game/domain/enums/piece_color.dart';
+import 'package:battlegrid/features/game/domain/enums/turns.dart';
 import 'package:battlegrid/features/game/infrastructure/repo/game_master.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,6 +19,8 @@ class _GameScreenState extends ConsumerState<GameScreen> {
 
   final boardRanks = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k"];
 
+  CurrentPlayer _currentPlayer = CurrentPlayer.black;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -33,24 +37,29 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                   decoration: BoxDecoration(
                       color: Colors.white,
                       border: Border.all(
-                        color: Colors.black,
+                        color: Colors.indigo.shade50,
                         width: 10,
                       )),
                   child: Column(
                     children: [
                       Row(
                         children: [
-                          SizedBox(
-                            height: 50,
-                            width: 50,
+                          Container(
+                            height: 30,
+                            width: 30,
+                            color: Colors.black,
                           ),
                           ...List.generate(
                             numberOfTileSlotOnEachAxis,
-                            (index) => SizedBox(
-                              height: 50,
+                            (index) => Container(
+                              height: 30,
                               width: 50,
-                              child:
-                                  Center(child: Text(boardRanks[index])),
+                              color: Colors.black,
+                              child: Center(
+                                  child: Text(
+                                boardRanks[index],
+                                style: const TextStyle(color: Colors.white),
+                              )),
                             ),
                           ),
                         ],
@@ -61,11 +70,15 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                             children: [
                               ...List.generate(
                                 numberOfTileSlotOnEachAxis,
-                                (index) => SizedBox(
+                                (index) => Container(
                                   height: 50,
-                                  width: 50,
+                                  width: 30,
+                                  color: Colors.black,
                                   child: Center(
-                                      child: Text((index + 1).toString())),
+                                      child: Text(
+                                    (index + 1).toString(),
+                                    style: const TextStyle(color: Colors.white),
+                                  )),
                                 ),
                               ).reversed,
                             ],
@@ -138,6 +151,48 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                                                         Container(
                                                       color: Colors.pink,
                                                     ),
+                                                    allowedButtonsFilter:
+                                                        (buttons) {
+                                                      final gamePiece =
+                                                          gameCoordinator
+                                                              .getGamePieceByCoordinate(
+                                                        xCord,
+                                                        yCord,
+                                                      );
+                                                      switch (_currentPlayer) {
+                                                        case CurrentPlayer
+                                                              .black:
+                                                          if (gamePiece!
+                                                                  .color ==
+                                                              PieceColor
+                                                                  .black) {
+                                                            return true;
+                                                          }
+                                                          break;
+                                                        case CurrentPlayer
+                                                              .white:
+                                                          if (gamePiece!
+                                                                  .color ==
+                                                              PieceColor
+                                                                  .white) {
+                                                            return true;
+                                                          }
+                                                          break;
+                                                        default:
+                                                          return false;
+                                                      }
+                                                      return false;
+                                                    },
+                                                    onDragCompleted: () {
+                                                      if (_currentPlayer ==
+                                                          CurrentPlayer.black) {
+                                                        _currentPlayer =
+                                                            CurrentPlayer.white;
+                                                      } else {
+                                                        _currentPlayer =
+                                                            CurrentPlayer.black;
+                                                      }
+                                                    },
                                                     child: Stack(
                                                       children: [
                                                         buildGamePieceByCoordinate(
@@ -161,24 +216,15 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                                                   // delete the stupid piece
                                                 },
                                                 onWillAccept: (gamePiece) {
-                                                  if (gameCoordinator
-                                                      .isPieceOnLocation(
+                                                  return gameCoordinator
+                                                      .canPieceMoveToThisLocation(
+                                                    gamePiece!,
                                                     xCord,
                                                     yCord,
-                                                  )) {
-                                                    return gameCoordinator
-                                                            .canThisPieceKillPieceOnLocation(
-                                                      gamePiece!,
-                                                      xCord,
-                                                      yCord,
-                                                    )
-                                                        ? true
-                                                        : false;
-                                                  }
-                                                  return true;
+                                                  );
                                                 },
                                                 onLeave: (data) {
-                                                  print('omo i was rejected');
+                                                  //
                                                 },
                                               ),
                                             ],
@@ -203,6 +249,10 @@ class _GameScreenState extends ConsumerState<GameScreen> {
         ),
       ),
     );
+  }
+
+  int getNumber() {
+    return 1;
   }
 
   Widget buildGamePieceByCoordinate(

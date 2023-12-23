@@ -1,4 +1,6 @@
+
 import 'package:battlegrid/features/game/domain/entities/location.dart';
+import 'package:battlegrid/features/game/domain/enums/piece_color.dart';
 import 'package:battlegrid/features/game/domain/enums/straight_moves.dart';
 import 'package:battlegrid/features/game/domain/repo_interface/game_piece_interface.dart';
 
@@ -6,30 +8,17 @@ import '../../domain/entities/game_piece.dart';
 import '../../domain/enums/piece_type.dart';
 
 class Pawn extends GamePiece implements GamePieceInterface {
-  final List<PieceType> killAbleGamePiece = [
-    PieceType.bishop,
-    PieceType.knight,
+  static const List<PieceType> capturableGamePieces = [
+    // PieceType.bishop,
+    // PieceType.knight,
     PieceType.pawn
   ];
 
-  Pawn(super.location, super.color) {
-    super.pieceType = PieceType.pawn;
-  }
-
-  @override
-  bool canPieceMoveHere(
-    List<GamePiece> otherGamePieces,
-    int xCord,
-    int yCord,
+  Pawn(
+    super.location,
+    super.color,
   ) {
-    final pieceLegalMoves = thisPieceLegalMoves(otherGamePieces);
-    final piecePossibleMoves = thisPiecePossibleMoves(otherGamePieces);
-
-    if (pieceLegalMoves != piecePossibleMoves) {
-      //
-    }
-
-    return false;
+    super.pieceType = PieceType.pawn;
   }
 
   @override
@@ -40,6 +29,11 @@ class Pawn extends GamePiece implements GamePieceInterface {
   ) {
     final pieceLegalMoves = thisPieceLegalMoves(otherGamePieces);
     final piecePossibleMoves = thisPiecePossibleMoves(otherGamePieces);
+
+    print("legal  moves");
+    print(pieceLegalMoves);
+    print("possible moves");
+    print(piecePossibleMoves);
     return (
       legalMoves: pieceLegalMoves,
       possibleMoves: piecePossibleMoves,
@@ -52,36 +46,26 @@ class Pawn extends GamePiece implements GamePieceInterface {
     bool checkObstruction = false,
   }) {
     return [
-      ...generateValidStraightMoves(
-        StraightMove.up,
-        2,
-        otherGamePieces,
-        checkObstruction: checkObstruction,
-      ),
-      ...generateValidStraightMoves(
-        StraightMove.right,
-        2,
-        otherGamePieces,
-        checkObstruction: checkObstruction,
-      ),
-      ...generateValidStraightMoves(
-        StraightMove.bottom,
-        2,
-        otherGamePieces,
-        checkObstruction: checkObstruction,
-      ),
-      ...generateValidStraightMoves(
-        StraightMove.left,
-        2,
-        otherGamePieces,
-        checkObstruction: checkObstruction,
-      ),
+      if (color == PieceColor.white)
+        ...generateValidStraightMoves(
+          StraightMove.up,
+          2,
+          otherGamePieces,
+          checkObstruction: checkObstruction,
+        )
+      else
+        ...generateValidStraightMoves(
+          StraightMove.bottom,
+          2,
+          otherGamePieces,
+          checkObstruction: checkObstruction,
+        ),
     ];
   }
 
   @override
   bool canKillPieceOnLocation(GamePiece gamePiece) {
-    return killAbleGamePiece.contains(gamePiece.pieceType);
+    return capturableGamePieces.contains(gamePiece.pieceType);
   }
 
   @override
@@ -89,6 +73,9 @@ class Pawn extends GamePiece implements GamePieceInterface {
     List<GamePiece> otherGamePieces, {
     bool checkObstruction = true,
   }) {
-    return thisPieceLegalMoves(otherGamePieces, checkObstruction: true);
+    return thisPieceLegalMoves(
+      otherGamePieces,
+      checkObstruction: checkObstruction,
+    );
   }
 }
