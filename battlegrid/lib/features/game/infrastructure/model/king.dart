@@ -8,9 +8,9 @@ import '../../domain/entities/location.dart';
 
 class King extends GamePiece implements GamePieceInterface {
   static const List<PieceType> capturableGamePieces = [
-    PieceType.bishop,
-    PieceType.knight,
-    PieceType.pawn
+    // PieceType.bishop,
+    // PieceType.knight,
+    // PieceType.pawn
   ];
 
   King(
@@ -28,6 +28,11 @@ class King extends GamePiece implements GamePieceInterface {
   ) {
     final pieceLegalMoves = thisPieceLegalMoves(otherGamePieces);
     final piecePossibleMoves = thisPiecePossibleMoves(otherGamePieces);
+
+    print("legal  moves");
+    print(pieceLegalMoves);
+    print("possible moves");
+    print(piecePossibleMoves);
     return (
       legalMoves: pieceLegalMoves,
       possibleMoves: piecePossibleMoves,

@@ -9,9 +9,9 @@ import '../../domain/enums/straight_moves.dart';
 
 class Queen extends GamePiece implements GamePieceInterface {
   static const List<PieceType> capturableGamePieces = [
-    PieceType.bishop,
-    PieceType.knight,
-    PieceType.pawn
+    // PieceType.bishop,
+    // PieceType.knight,
+    // PieceType.pawn
   ];
   Queen(super.location, super.color) {
     super.pieceType = PieceType.queen;
@@ -25,6 +25,11 @@ class Queen extends GamePiece implements GamePieceInterface {
   ) {
     final pieceLegalMoves = thisPieceLegalMoves(otherGamePieces);
     final piecePossibleMoves = thisPiecePossibleMoves(otherGamePieces);
+
+    print("legal  moves");
+    print(pieceLegalMoves);
+    print("possible moves");
+    print(piecePossibleMoves);
     return (
       legalMoves: pieceLegalMoves,
       possibleMoves: piecePossibleMoves,

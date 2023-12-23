@@ -8,9 +8,9 @@ import '../../domain/enums/piece_type.dart';
 
 class Bishop extends GamePiece implements GamePieceInterface {
   static const List<PieceType> capturableGamePieces = [
-    PieceType.bishop,
-    PieceType.knight,
-    PieceType.pawn
+    // PieceType.bishop,
+    // PieceType.knight,
+    // PieceType.pawn
   ];
 
   Bishop(super.location, super.color) {
@@ -25,6 +25,11 @@ class Bishop extends GamePiece implements GamePieceInterface {
   ) {
     final pieceLegalMoves = thisPieceLegalMoves(otherGamePieces);
     final piecePossibleMoves = thisPiecePossibleMoves(otherGamePieces);
+
+    print("legal  moves");
+    print(pieceLegalMoves);
+    print("possible moves");
+    print(piecePossibleMoves);
     return (
       legalMoves: pieceLegalMoves,
       possibleMoves: piecePossibleMoves,

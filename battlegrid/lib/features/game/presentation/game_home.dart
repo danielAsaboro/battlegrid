@@ -33,24 +33,29 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                   decoration: BoxDecoration(
                       color: Colors.white,
                       border: Border.all(
-                        color: Colors.black,
+                        color: Colors.indigo.shade50,
                         width: 10,
                       )),
                   child: Column(
                     children: [
                       Row(
                         children: [
-                          SizedBox(
-                            height: 50,
-                            width: 50,
+                          Container(
+                            height: 30,
+                            width: 30,
+                            color: Colors.black,
                           ),
                           ...List.generate(
                             numberOfTileSlotOnEachAxis,
-                            (index) => SizedBox(
-                              height: 50,
+                            (index) => Container(
+                              height: 30,
                               width: 50,
-                              child:
-                                  Center(child: Text(boardRanks[index])),
+                              color: Colors.black,
+                              child: Center(
+                                  child: Text(
+                                boardRanks[index],
+                                style: TextStyle(color: Colors.white),
+                              )),
                             ),
                           ),
                         ],
@@ -61,11 +66,15 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                             children: [
                               ...List.generate(
                                 numberOfTileSlotOnEachAxis,
-                                (index) => SizedBox(
+                                (index) => Container(
                                   height: 50,
-                                  width: 50,
+                                  width: 30,
+                                  color: Colors.black,
                                   child: Center(
-                                      child: Text((index + 1).toString())),
+                                      child: Text(
+                                    (index + 1).toString(),
+                                    style: TextStyle(color: Colors.white),
+                                  )),
                                 ),
                               ).reversed,
                             ],
@@ -161,24 +170,15 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                                                   // delete the stupid piece
                                                 },
                                                 onWillAccept: (gamePiece) {
-                                                  if (gameCoordinator
-                                                      .isPieceOnLocation(
+                                                  return gameCoordinator
+                                                      .canPieceMoveToThisLocation(
+                                                    gamePiece!,
                                                     xCord,
                                                     yCord,
-                                                  )) {
-                                                    return gameCoordinator
-                                                            .canThisPieceKillPieceOnLocation(
-                                                      gamePiece!,
-                                                      xCord,
-                                                      yCord,
-                                                    )
-                                                        ? true
-                                                        : false;
-                                                  }
-                                                  return true;
+                                                  );
                                                 },
                                                 onLeave: (data) {
-                                                  print('omo i was rejected');
+                                                  //
                                                 },
                                               ),
                                             ],

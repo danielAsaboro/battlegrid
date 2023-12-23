@@ -1,5 +1,6 @@
 import 'package:battlegrid/features/game/domain/entities/game_piece.dart';
 import 'package:battlegrid/features/game/domain/entities/location.dart';
+import 'package:battlegrid/features/game/domain/enums/knight_l_moves.dart';
 import 'package:battlegrid/features/game/domain/repo_interface/game_piece_interface.dart';
 
 import '../../domain/enums/piece_type.dart';
@@ -7,9 +8,9 @@ import '../../domain/enums/straight_moves.dart';
 
 class Knight extends GamePiece implements GamePieceInterface {
   static const List<PieceType> capturableGamePieces = [
-    PieceType.bishop,
-    PieceType.knight,
-    PieceType.pawn
+    // PieceType.bishop,
+    // PieceType.knight,
+    // PieceType.pawn
   ];
 
   Knight(super.location, super.color) {
@@ -24,6 +25,11 @@ class Knight extends GamePiece implements GamePieceInterface {
   ) {
     final pieceLegalMoves = thisPieceLegalMoves(otherGamePieces);
     final piecePossibleMoves = thisPiecePossibleMoves(otherGamePieces);
+
+    print("legal  moves");
+    print(pieceLegalMoves);
+    print("possible moves");
+    print(piecePossibleMoves);
     return (
       legalMoves: pieceLegalMoves,
       possibleMoves: piecePossibleMoves,
@@ -60,6 +66,14 @@ class Knight extends GamePiece implements GamePieceInterface {
         otherGamePieces,
         checkObstruction: checkObstruction,
       ),
+      ...generateTheLMoves(KnightLMove.upRight, 1, otherGamePieces),
+      ...generateTheLMoves(KnightLMove.rightUp, 1, otherGamePieces),
+      ...generateTheLMoves(KnightLMove.rightDown, 1, otherGamePieces),
+      ...generateTheLMoves(KnightLMove.downRight, 1, otherGamePieces),
+      ...generateTheLMoves(KnightLMove.downLeft, 1, otherGamePieces),
+      ...generateTheLMoves(KnightLMove.leftDown, 1, otherGamePieces),
+      ...generateTheLMoves(KnightLMove.leftUp, 1, otherGamePieces),
+      ...generateTheLMoves(KnightLMove.upLeft, 1, otherGamePieces),
     ];
   }
 

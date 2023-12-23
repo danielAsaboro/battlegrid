@@ -71,6 +71,7 @@ class GameMaster {
     int xCord,
     int yCord,
   ) {
+    // return true;
     final pieceMoves = piece.getPieceMoves(allGamePiece, xCord, yCord);
     const deepEquality = DeepCollectionEquality.unordered();
 
@@ -81,17 +82,24 @@ class GameMaster {
       return pieceMoves.possibleMoves
           .any((location) => location == Location(xCord, yCord));
     } else {
-      pieceMoves.legalMoves.removeWhere(
+      final passingLegalMoves = [...pieceMoves.legalMoves];
+      passingLegalMoves.removeWhere(
           (location) => pieceMoves.possibleMoves.contains(location));
-      final remainingLocation = pieceMoves.legalMoves;
+      final remainingLocations = passingLegalMoves;
+      print("remaining locations");
+      print(remainingLocations);
 
       final isPieceInLocation =
-          remainingLocation.contains(Location(xCord, yCord));
+          remainingLocations.contains(Location(xCord, yCord));
       if (isPieceInLocation) {
-        return canPieceMoveToThisLocation(piece, xCord, yCord);
-      } else {
+        print("yes");
+        return canThisPieceKillPieceOnLocation(piece, xCord, yCord);
+      }
+      if (pieceMoves.legalMoves.contains(Location(xCord, yCord))) {
         return true;
       }
+      return false;
+      // return true; stop returning any how
     }
     // will test tomorrow TODO
   }
@@ -109,7 +117,13 @@ class GameMaster {
     int yCord,
   ) {
     final gamePiece = getGamePieceByCoordinate(xCord, yCord);
-    return piece.canKillPieceOnLocation(gamePiece!);
+    final canKillPiece = piece.canKillPieceOnLocation(gamePiece!);
+    if (canKillPiece) {
+      deleteThisPiece(xCord, yCord);
+      //TODO score board go brh
+      return true;
+    }
+    return false;
   }
 
 // hacky for now,
@@ -121,5 +135,23 @@ class GameMaster {
   ) {
     piece.location.xCord = newXCord;
     piece.location.yCord = newYCord;
+  }
+
+  void deleteThisPiece(
+    int xCord,
+    int yCord,
+  ) {
+    final gamePiece = getGamePieceByCoordinate(xCord, yCord);
+    if (gamePiece != null) {
+      if (gamePiece.color == PieceColor.black) {
+        _allBlackPieces.removeWhere(
+          (gamePiece) => gamePiece.location == Location(xCord, yCord),
+        );
+      } else {
+        _allWhitePieces.removeWhere(
+          (gamePiece) => gamePiece.location == Location(xCord, yCord),
+        );
+      }
+    }
   }
 }
