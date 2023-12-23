@@ -1,4 +1,3 @@
-import 'package:battlegrid/features/game/presentation/game_wrapper.dart';
 import 'package:flutter/material.dart';
 
 import 'features/game/presentation/game_home.dart';
@@ -13,7 +12,7 @@ class TestingPage extends StatefulWidget {
 class _TestingPageState extends State<TestingPage> {
   @override
   Widget build(BuildContext context) {
-    return GameScreen();
+    return const GameScreen();
   }
 }
 

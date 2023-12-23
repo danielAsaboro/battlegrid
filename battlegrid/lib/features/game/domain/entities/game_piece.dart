@@ -7,7 +7,6 @@ import '../enums/diagonal_moves.dart';
 import '../enums/knight_l_moves.dart';
 import '../enums/piece_color.dart';
 
-import 'package:collection/collection.dart';
 
 abstract class GamePiece {
   final Location location;

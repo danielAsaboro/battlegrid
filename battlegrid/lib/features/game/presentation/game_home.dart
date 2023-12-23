@@ -1,5 +1,7 @@
 import 'package:battlegrid/core/constants/game_setting_constants.dart';
 import 'package:battlegrid/features/game/domain/entities/game_piece.dart';
+import 'package:battlegrid/features/game/domain/enums/piece_color.dart';
+import 'package:battlegrid/features/game/domain/enums/turns.dart';
 import 'package:battlegrid/features/game/infrastructure/repo/game_master.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,6 +18,8 @@ class _GameScreenState extends ConsumerState<GameScreen> {
   final gameCoordinator = GameMaster.newGame();
 
   final boardRanks = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k"];
+
+  CurrentPlayer _currentPlayer = CurrentPlayer.black;
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +58,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                               child: Center(
                                   child: Text(
                                 boardRanks[index],
-                                style: TextStyle(color: Colors.white),
+                                style: const TextStyle(color: Colors.white),
                               )),
                             ),
                           ),
@@ -73,7 +77,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                                   child: Center(
                                       child: Text(
                                     (index + 1).toString(),
-                                    style: TextStyle(color: Colors.white),
+                                    style: const TextStyle(color: Colors.white),
                                   )),
                                 ),
                               ).reversed,
@@ -147,6 +151,48 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                                                         Container(
                                                       color: Colors.pink,
                                                     ),
+                                                    allowedButtonsFilter:
+                                                        (buttons) {
+                                                      final gamePiece =
+                                                          gameCoordinator
+                                                              .getGamePieceByCoordinate(
+                                                        xCord,
+                                                        yCord,
+                                                      );
+                                                      switch (_currentPlayer) {
+                                                        case CurrentPlayer
+                                                              .black:
+                                                          if (gamePiece!
+                                                                  .color ==
+                                                              PieceColor
+                                                                  .black) {
+                                                            return true;
+                                                          }
+                                                          break;
+                                                        case CurrentPlayer
+                                                              .white:
+                                                          if (gamePiece!
+                                                                  .color ==
+                                                              PieceColor
+                                                                  .white) {
+                                                            return true;
+                                                          }
+                                                          break;
+                                                        default:
+                                                          return false;
+                                                      }
+                                                      return false;
+                                                    },
+                                                    onDragCompleted: () {
+                                                      if (_currentPlayer ==
+                                                          CurrentPlayer.black) {
+                                                        _currentPlayer =
+                                                            CurrentPlayer.white;
+                                                      } else {
+                                                        _currentPlayer =
+                                                            CurrentPlayer.black;
+                                                      }
+                                                    },
                                                     child: Stack(
                                                       children: [
                                                         buildGamePieceByCoordinate(
@@ -203,6 +249,10 @@ class _GameScreenState extends ConsumerState<GameScreen> {
         ),
       ),
     );
+  }
+
+  int getNumber() {
+    return 1;
   }
 
   Widget buildGamePieceByCoordinate(

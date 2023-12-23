@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:battlegrid/features/game/domain/entities/location.dart';
 import 'package:battlegrid/features/game/domain/enums/piece_color.dart';

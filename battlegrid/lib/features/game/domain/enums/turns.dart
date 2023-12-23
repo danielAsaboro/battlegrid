@@ -1,4 +1,4 @@
 enum CurrentPlayer {
-  playerOne,
-  playerTwo,
+  black,
+  white,
 }
