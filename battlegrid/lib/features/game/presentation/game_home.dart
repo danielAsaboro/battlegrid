@@ -2,7 +2,7 @@ import 'package:battlegrid/core/constants/game_setting_constants.dart';
 import 'package:battlegrid/features/game/domain/entities/game_piece.dart';
 import 'package:battlegrid/features/game/domain/enums/piece_color.dart';
 import 'package:battlegrid/features/game/domain/enums/turns.dart';
-import 'package:battlegrid/features/game/infrastructure/repo/game_master.dart';
+import 'package:battlegrid/features/game/presentation/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -15,14 +15,11 @@ class GameScreen extends ConsumerStatefulWidget {
 }
 
 class _GameScreenState extends ConsumerState<GameScreen> {
-  final gameCoordinator = GameMaster.newGame();
-
   final boardRanks = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k"];
-
-  CurrentPlayer _currentPlayer = CurrentPlayer.black;
 
   @override
   Widget build(BuildContext context) {
+    final gameCoordinator = ref.watch(gameMasterProvider);
     return SafeArea(
       child: Scaffold(
         body: Center(
@@ -48,6 +45,14 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                             height: 30,
                             width: 30,
                             color: Colors.black,
+                            child: IconButton(
+                              icon: const Icon(Icons.replay_rounded),
+                              onPressed: () {
+                                ref
+                                    .read(gameMasterProvider.notifier)
+                                    .undoMove();
+                              },
+                            ),
                           ),
                           ...List.generate(
                             numberOfTileSlotOnEachAxis,
@@ -136,7 +141,8 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                                                   candidateData,
                                                   rejectedData,
                                                 ) {
-                                                  return Draggable<GamePiece>(
+                                                  var draggable =
+                                                      Draggable<GamePiece>(
                                                     feedback:
                                                         buildGamePieceByCoordinate(
                                                       xCord,
@@ -152,46 +158,13 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                                                       color: Colors.pink,
                                                     ),
                                                     allowedButtonsFilter:
-                                                        (buttons) {
-                                                      final gamePiece =
-                                                          gameCoordinator
-                                                              .getGamePieceByCoordinate(
-                                                        xCord,
-                                                        yCord,
-                                                      );
-                                                      switch (_currentPlayer) {
-                                                        case CurrentPlayer
-                                                              .black:
-                                                          if (gamePiece!
-                                                                  .color ==
-                                                              PieceColor
-                                                                  .black) {
-                                                            return true;
-                                                          }
-                                                          break;
-                                                        case CurrentPlayer
-                                                              .white:
-                                                          if (gamePiece!
-                                                                  .color ==
-                                                              PieceColor
-                                                                  .white) {
-                                                            return true;
-                                                          }
-                                                          break;
-                                                        default:
-                                                          return false;
-                                                      }
-                                                      return false;
-                                                    },
+                                                        (buttons) =>
+                                                            isTileDisabled(
+                                                      xCord,
+                                                      yCord,
+                                                    ),
                                                     onDragCompleted: () {
-                                                      if (_currentPlayer ==
-                                                          CurrentPlayer.black) {
-                                                        _currentPlayer =
-                                                            CurrentPlayer.white;
-                                                      } else {
-                                                        _currentPlayer =
-                                                            CurrentPlayer.black;
-                                                      }
+                                                      //
                                                     },
                                                     child: Stack(
                                                       children: [
@@ -203,17 +176,25 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                                                       ],
                                                     ),
                                                   );
+                                                  return draggable;
                                                 }),
                                                 onAccept: (gamePiece) {
-                                                  gameCoordinator
-                                                      .updateLocation(
-                                                    gamePiece,
-                                                    xCord,
-                                                    yCord,
-                                                  );
-
-                                                  setState(() {});
-                                                  // delete the stupid piece
+                                                  // if (gameCoordinator
+                                                  //     .canThisPieceKillPieceOnLocation(
+                                                  //         gamePiece,
+                                                  //         xCord,
+                                                  //         yCord)) {
+                                                  //   ref
+                                                  //       .read(gameMasterProvider
+                                                  //           .notifier)
+                                                  //       .deleteThisPiece(
+                                                  //           xCord, yCord);
+                                                  // }
+                                                  ref
+                                                      .read(gameMasterProvider
+                                                          .notifier)
+                                                      .updateLocation(gamePiece,
+                                                          xCord, yCord);
                                                 },
                                                 onWillAccept: (gamePiece) {
                                                   return gameCoordinator
@@ -251,15 +232,42 @@ class _GameScreenState extends ConsumerState<GameScreen> {
     );
   }
 
-  int getNumber() {
-    return 1;
+  bool isTileDisabled(int xCord, int yCord) {
+    {
+      final gamePiece = ref.read(gameMasterProvider).getGamePieceByCoordinate(
+            xCord,
+            yCord,
+          );
+      final _currentPlayer = ref.read(gameMasterProvider).getCurrentPlayer;
+      print("current player: ${_currentPlayer.name}");
+      if (gamePiece != null) {
+        switch (_currentPlayer) {
+          case CurrentPlayer.black:
+            if (gamePiece.color == PieceColor.black) {
+              return true;
+            }
+            break;
+          case CurrentPlayer.white:
+            if (gamePiece.color == PieceColor.white) {
+              return true;
+            }
+            break;
+          default:
+            return false;
+        }
+      } else {
+        return false;
+      }
+      return false;
+    }
   }
 
   Widget buildGamePieceByCoordinate(
     int xCord,
     int yCord,
   ) {
-    final gamePiece = gameCoordinator.getGamePieceByCoordinate(xCord, yCord);
+    final gamePiece =
+        ref.read(gameMasterProvider).getGamePieceByCoordinate(xCord, yCord);
     return gamePiece != null
         ? SvgPicture.asset(
             gamePiece.imageSourcePath,

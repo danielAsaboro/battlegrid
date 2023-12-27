@@ -29,10 +29,6 @@ class King extends GamePiece implements GamePieceInterface {
     final pieceLegalMoves = thisPieceLegalMoves(otherGamePieces);
     final piecePossibleMoves = thisPiecePossibleMoves(otherGamePieces);
 
-    print("legal  moves");
-    print(pieceLegalMoves);
-    print("possible moves");
-    print(piecePossibleMoves);
     return (
       legalMoves: pieceLegalMoves,
       possibleMoves: piecePossibleMoves,
@@ -107,5 +103,10 @@ class King extends GamePiece implements GamePieceInterface {
     bool checkObstruction = true,
   }) {
     return thisPieceLegalMoves(otherGamePieces, checkObstruction: true);
+  }
+
+  @override
+  GamePiece updateLocation(int newXCord, int newYCord) {
+    return King(Location(newXCord, newYCord), color);
   }
 }

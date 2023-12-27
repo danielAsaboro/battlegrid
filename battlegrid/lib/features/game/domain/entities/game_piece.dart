@@ -7,7 +7,6 @@ import '../enums/diagonal_moves.dart';
 import '../enums/knight_l_moves.dart';
 import '../enums/piece_color.dart';
 
-
 abstract class GamePiece {
   final Location location;
   late final PieceType pieceType;
@@ -326,4 +325,6 @@ abstract class GamePiece {
   }
 
 // lol
+
+  GamePiece updateLocation(int newXCord, int newYCord);
 }
