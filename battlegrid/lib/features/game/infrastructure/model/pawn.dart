@@ -1,4 +1,3 @@
-
 import 'package:battlegrid/features/game/domain/entities/location.dart';
 import 'package:battlegrid/features/game/domain/enums/piece_color.dart';
 import 'package:battlegrid/features/game/domain/enums/straight_moves.dart';
@@ -30,10 +29,6 @@ class Pawn extends GamePiece implements GamePieceInterface {
     final pieceLegalMoves = thisPieceLegalMoves(otherGamePieces);
     final piecePossibleMoves = thisPiecePossibleMoves(otherGamePieces);
 
-    print("legal  moves");
-    print(pieceLegalMoves);
-    print("possible moves");
-    print(piecePossibleMoves);
     return (
       legalMoves: pieceLegalMoves,
       possibleMoves: piecePossibleMoves,
@@ -77,5 +72,10 @@ class Pawn extends GamePiece implements GamePieceInterface {
       otherGamePieces,
       checkObstruction: checkObstruction,
     );
+  }
+
+  @override
+  GamePiece updateLocation(int newXCord, int newYCord) {
+    return Pawn(Location(newXCord, newYCord), color);
   }
 }

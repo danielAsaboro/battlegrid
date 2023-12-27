@@ -4,6 +4,7 @@ import 'package:battlegrid/features/game/domain/entities/location.dart';
 import 'package:collection/collection.dart';
 
 import '../../domain/enums/piece_color.dart';
+import '../../domain/enums/turns.dart';
 import '../model/bishop.dart';
 import '../model/king.dart';
 import '../model/knight.dart';
@@ -16,12 +17,29 @@ class GameMaster {
   late final List<GamePiece> _allWhitePieces;
   List<GamePiece> get allGamePiece => [..._allBlackPieces, ..._allWhitePieces];
 
+  late final CurrentPlayer _currentPlayer;
+  late final List<GamePiece>? _blackPieceOldPositions;
+  late final List<GamePiece>? _whitePieceOldPositions;
+
+  CurrentPlayer get getCurrentPlayer => _currentPlayer;
+  List<GamePiece> get allBlackPieces => _allBlackPieces;
+  List<GamePiece> get allWhitePieces => _allWhitePieces;
+
+  List<GamePiece> get blackPieceOldPositions => _blackPieceOldPositions!;
+  List<GamePiece> get whitePieceOldPositions => _whitePieceOldPositions!;
+
   GameMaster({
     required List<GamePiece> blacks,
     required List<GamePiece> whites,
+    required CurrentPlayer currentPlayer,
+    List<GamePiece>? oldBlacks,
+    List<GamePiece>? oldWhites,
   }) {
     _allBlackPieces = blacks;
     _allWhitePieces = whites;
+    _blackPieceOldPositions = oldBlacks;
+    _whitePieceOldPositions = oldWhites;
+    _currentPlayer = currentPlayer;
   }
 
   GameMaster.newGame()
@@ -56,6 +74,7 @@ class GameMaster {
               (index) => Pawn(Location(index, 9), PieceColor.white),
             ),
           ],
+          currentPlayer: CurrentPlayer.black,
         );
 
   GamePiece? getGamePieceByCoordinate(
@@ -119,39 +138,55 @@ class GameMaster {
     final gamePiece = getGamePieceByCoordinate(xCord, yCord);
     final canKillPiece = piece.canKillPieceOnLocation(gamePiece!);
     if (canKillPiece) {
-      deleteThisPiece(xCord, yCord);
+      // deleteThisPiece(xCord, yCord);
       //TODO score board go brh
       return true;
     }
     return false;
   }
 
-// hacky for now,
-//need to make all fields final
-  void updateLocation(
-    GamePiece piece,
-    int newXCord,
-    int newYCord,
-  ) {
-    piece.location.xCord = newXCord;
-    piece.location.yCord = newYCord;
+  bool isTileDisabled(int xCord, int yCord) {
+    {
+      final gamePiece = getGamePieceByCoordinate(
+        xCord,
+        yCord,
+      );
+      print("current player: ${getCurrentPlayer.name}");
+      if (gamePiece != null) {
+        switch (getCurrentPlayer) {
+          case CurrentPlayer.black:
+            if (gamePiece.color == PieceColor.black) {
+              return true;
+            }
+            break;
+          case CurrentPlayer.white:
+            if (gamePiece.color == PieceColor.white) {
+              return true;
+            }
+            break;
+          default:
+            return false;
+        }
+      } else {
+        return false;
+      }
+      return false;
+    }
   }
 
-  void deleteThisPiece(
-    int xCord,
-    int yCord,
-  ) {
-    final gamePiece = getGamePieceByCoordinate(xCord, yCord);
-    if (gamePiece != null) {
-      if (gamePiece.color == PieceColor.black) {
-        _allBlackPieces.removeWhere(
-          (gamePiece) => gamePiece.location == Location(xCord, yCord),
-        );
-      } else {
-        _allWhitePieces.removeWhere(
-          (gamePiece) => gamePiece.location == Location(xCord, yCord),
-        );
-      }
-    }
+  GameMaster copyWith({
+    List<GamePiece>? blacks,
+    List<GamePiece>? whites,
+    List<GamePiece>? oldBlacks,
+    List<GamePiece>? oldWhites,
+    CurrentPlayer? passedCurrentPlayer,
+  }) {
+    return GameMaster(
+      blacks: blacks ?? allBlackPieces,
+      whites: whites ?? allWhitePieces,
+      oldBlacks: oldBlacks ?? blackPieceOldPositions,
+      oldWhites: oldWhites ?? whitePieceOldPositions,
+      currentPlayer: passedCurrentPlayer ?? _currentPlayer,
+    );
   }
 }

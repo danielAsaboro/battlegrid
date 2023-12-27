@@ -1,8 +1,8 @@
 import 'package:battlegrid/core/constants/game_setting_constants.dart';
 
 class Location {
-  int xCord;
-  int yCord;
+  final int xCord;
+  final int yCord;
 
   Location(this.xCord, this.yCord);
 
